@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="../../adminStyles.css" />
+  </head>
+  <body>
+    <!--==============================
+     Preloader
+    ==============================-->
+    <div class="preloader">
+      <div class="preloader-inner">
+        <span class="loader"></span>
+      </div>
+    </div>
+
+    <div class="login-wrapper">
+      <div class="login-form-wrapper">
+        <div class="logo-img">
+          <img
+            src="../../../assets/images/fb instsa profile logo  png -02.png"
+            alt=""
+          />
+          <h2>Login</h2>
+        </div>
+
+        <form id="loginForm">
+          <input name="login_as_admin" type="hidden" />
+          <div class="input-wrapper">
+            <label>Admin Email</label>
+            <input type="email" id="email" name="email" placeholder="Email" />
+            <div class="formError error" id="error"></div>
+          </div>
+          <div class="input-wrapper">
+            <label> Admin password </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Password"
+            />
+            <div class="formError error" id="error"></div>
+          </div>
+          <div
+            style="text-align: center; width: 90%; margin: auto; color: green"
+            id="response-message"
+          ></div>
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- jQuery CDN -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- <script src="../../main.js"></script> -->
+    <script>
+      $(window).on("load", () => {
+        $(".preloader").fadeOut();
+
+        /*===========================================
+          =         Preloader         =
+      =============================================*/
+        if ($(".preloader").length > 0) {
+          $(".preloaderCls").each(function () {
+            $(this).on("click", function (e) {
+              e.preventDefault();
+              $(".preloader").css("display", "none");
+            });
+          });
+        }
+
+        $("#loginForm").on("submit", function (event) {
+          event.preventDefault();
+          var valid = true;
+          var errorMessage = "";
+
+          $(".formError").html("");
+          $("#response-message").html("");
+
+          // Validate each field
+          if ($('#loginForm input[name="email"]').val() === "") {
+            valid = false;
+            errorMessage = "Email is required.";
+            $('#loginForm input[name="email"]')
+              .next(".formError")
+              .html(errorMessage);
+          }
+          if ($('#loginForm input[name="password"]').val() === "") {
+            valid = false;
+            errorMessage = "Password is required.";
+            $('#loginForm input[name="password"]')
+              .next(".formError")
+              .html(errorMessage);
+          }
+
+          if (valid) {
+            var button = $(".login-btn button");
+            button.text("loging in...");
+
+            $.ajax({
+              url: "../../../app/controllers/admin.php",
+              type: "POST",
+              data: $(this).serialize(),
+
+              success: function (response) {
+                if (JSON.parse(response).status === "error") {
+                  $("#response-message").html(
+                    `<p class="formError">${JSON.parse(response).message}</p>`
+                  );
+                  button.text("Login");
+                } else {
+                  if (JSON.parse(response).status_code === 201) {
+                    button.text("redirecting");
+                    setTimeout(() => {
+                      window.location.href = "../../account-setup/";
+                    }, 3000);
+                  } else {
+                    $("#response-message").html("logged in successfully.");
+                    button.text("redirecting");
+                    setTimeout(() => {
+                      window.location.href = "../../overview/";
+                    }, 3000);
+                  }
+                }
+              },
+              error: function (e) {
+                $("#response-message").html(e.statusText);
+                button.text("Login");
+              },
+            });
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

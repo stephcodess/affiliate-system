@@ -1,0 +1,46 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+@font-face {
+    font-family: 'circe';
+    src: url('../fonts/CRC55.otf') format('opentype');
+
+}
+
+@font-face {
+    font-family: 'light-circe';
+    src: url('../fonts/CRC25.otf') format('opentype');
+
+}
+
+@font-face {
+    font-family: 'normal-circe';
+    src: url('../fonts/CRC35.otf') format('opentype');
+
+}
+
+@font-face {
+    font-family: 'the-seasons';
+    src: url('../fonts/Fontspring-DEMO-theseasons-reg.otf') format('opentype');
+
+}
+
+
+:root {
+    --primary-theme-color: #016BB5;
+    --secondary-theme-color: #AF5CE5;
+    --tertiary-theme-color: #FFC201;
+    --primary-font-family: 'circe', sans-serif;
+    --primary-font-family-light: 'light-circe', sans-serif;
+    --icon-font: "Font Awesome 5 Free";
+    --primary-font-family-normal: 'normal-circe', sans-serif;
+    --secondary-font-family: "the-seasons", sans-serif;
+    --tertiary-font-family: "Inter", sans-serif;
+    --grey-text-color: #3c3c3b;
+    --white: #fff;
+}
+
+:root {
+    --primary-rgb-theme-color: 1, 107, 181;
+    --secondary-rgb-theme-color: #AF5CE5;
+    --tertiary-rgb-theme-color: #FFC201;
+}

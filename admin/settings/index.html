@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="../adminStyles.css" />
+    <!-- DataTables CSS CDN -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!--==============================
+     Preloader
+    ==============================-->
+    <div class="preloader">
+      <div class="preloader-inner">
+        <span class="loader"></span>
+      </div>
+    </div>
+
+    <div class="admin-sidebar">
+      <div class="logo-img">
+        <img
+          src="../../assets/images/fb instsa profile logo  png -02.png"
+          alt=""
+        />
+      </div>
+      <div class="nav-wrapper">
+        <ul>
+          <li>
+            <a href="../overview/"
+              ><i class="fas fa-tachometer-alt"></i> Overview
+            </a>
+          </li>
+          <li>
+            <a href="../manage-admins/"
+              ><i class="fas fa-user-shield"></i> Manage Admins</a
+            >
+          </li>
+          <li>
+            <a href="../users/"><i class="fas fa-users"></i> Manage users </a>
+          </li>
+          <li>
+            <a href="../manage-orders/"
+              ><i class="fas fa-shopping-cart"></i> Manage Orders</a
+            >
+          </li>
+          <li>
+            <a href="../manage-withdrawals/"
+              ><i class="fas fa-wallet"></i> Manage Withdrawals</a
+            >
+          </li>
+          <li class="active">
+            <a href=""><i class="fas fa-cogs"></i> Product settings </a>
+          </li>
+        <li>
+            <a href="../account-setup/"><i class="fas fa-cogs"></i> Account setup </a>
+          </li>
+</ul>
+      </div>
+    </div>
+    <div class="admin-body">
+      <div class="body-wrapper">
+        <div class="admin-header">
+          <div style="margin-left: 20px">
+            <h1>Curbinfect Admin</h1>
+          </div>
+        </div>
+
+        <div class="edit-product-details">
+          <h2>PRODUCT SETTING</h2>
+          <form id="editProductForm">
+            <input name="product_settings" value="1" type="text" hidden />
+            <div class="form-group">
+              <label for="productPrice">Product Price</label>
+              <input
+                type="number"
+                id="productPrice"
+                name="price"
+                value=""
+                placeholder="Enter product price"
+              />
+              <div class="formError"></div>
+            </div>
+            <!-- <div class="form-group"> -->
+              <!-- <label for="minQuantity">Minimum Quantity</label> -->
+              <input
+                type="number"
+                id="minQuantity"
+                name="minimum_order"
+                hidden
+                value="1000"
+                placeholder="Enter minimum quantity"
+              />
+              <!-- <div class="formError"></div> -->
+            <!-- </div> -->
+            <!-- <div class="form-group"> -->
+              <!-- <label for="maxQuantity">Maximum Quantity</label> -->
+              <input
+                type="number"
+                id="maxQuantity"
+                name="max_order"
+                hidden
+                value="1000"
+                placeholder="Enter maximum quantity"
+              />
+              <!-- <div class="formError"></div> -->
+            <!-- </div> -->
+            <div class="form-group">
+              <label for="affiliateCommission">Affiliate Commission (%)</label>
+              <input
+                type="number"
+                id="affiliateCommission"
+                name="affiliate_commission"
+                value=""
+                placeholder="Enter affiliate commission"
+              />
+              <div class="formError"></div>
+            </div>
+            <div id="response-message"></div>
+            <button type="submit" class="save-btn">Save Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+    <script src="../main.js"></script>
+    <script>
+      $(window).on("load", () => {
+        $("#editProductForm").on("submit", function (event) {
+          event.preventDefault();
+          var valid = true;
+          var errorMessage = "";
+
+          $(".formError").html("");
+          $("#response-message").html("");
+
+          // Validate each field
+          if ($('#editProductForm input[name="price"]').val() === "") {
+            valid = false;
+            errorMessage = "Price is required.";
+            $('#editProductForm input[name="price"]')
+              .next(".formError")
+              .html(errorMessage);
+          }
+          if ($('#editProductForm input[name="min_quantity"]').val() === "") {
+            valid = false;
+            errorMessage = "Min quantity is required.";
+            $('#editProductForm input[name="min_quantity"]')
+              .next(".formError")
+              .html(errorMessage);
+          }
+          if ($('#editProductForm input[name="max_quantity"]').val() === "") {
+            valid = false;
+            errorMessage = "Max quantity is required.";
+            $('#editProductForm input[name="max_quantity"]')
+              .next(".formError")
+              .html(errorMessage);
+          }
+          if (
+            $('#editProductForm input[name="affiliate_commission"]').val() ===
+            ""
+          ) {
+            valid = false;
+            errorMessage = "Affiliate commission is required.";
+            $('#editProductForm input[name="affiliate_commission"]')
+              .next(".formError")
+              .html(errorMessage);
+          }
+
+          if (valid) {
+            var button = $(".save-btn");
+            button.text("Creating...");
+
+            $.ajax({
+              url: "../../app/controllers/admin.php",
+              type: "POST",
+              data: $(this).serialize(),
+
+              success: function (response) {
+                JSON.parse(response).status === "error"
+                  ? $("#editProductForm #response-message").html(
+                      `<p class="formError">${JSON.parse(response).message}</p>`
+                    )
+                  : $("#editProductForm #response-message").html(
+                      "created successfully."
+                    );
+                button.text("save changes");
+              },
+              error: function (e) {
+                $("#editProductForm #response-message").html(e.statusText);
+                button.text("save changes");
+              },
+            });
+          }
+        });
+
+        $.ajax({
+          url: "../../app/controllers/admin.php?product_settings=1",
+          type: "GET",
+          success: function (response) {
+            const data = JSON.parse(response).data;
+            
+            $("#productPrice").val(data.price);
+            $("#minQuantity").val(data.minimum_order);
+            $("#maxQuantity").val(data.max_order);
+            $("#affiliateCommission").val(data.affiliate_commission);
+          },
+          error: function (e) {
+            $("#editProductForm #response-message").html(e.statusText);
+            button.text("save changes");
+          },
+        });
+      });
+    </script>
+  </body>
+</html>
